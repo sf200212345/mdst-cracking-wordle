@@ -78,7 +78,7 @@ class Wordle:
     # with the same definitions given in that function. 
     # This function finds all the correct, misplaced, wrong and unused letters based on the parameters
     # and prints it all out with your past guessing history for a nice display.
-    def print_state(self, current_guesses: [str], guess_feedback: [str]) -> None:
+    def print_state(self, current_guesses: list[str], guess_feedback: list[str]) -> None:
         correct = set()
         misplaced = set()
         wrong = set()
