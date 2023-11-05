@@ -115,21 +115,27 @@ def get_solution_index():
 # this is identical to the one in wordle_solution.py or wordle_master.ipynb
 @app.route("/check_guess/", methods=["POST"])
 def check_guess():
+    # TODO
     # both the solution index and current guess are passed in as part of the query
-    # i.e. www.blog.com/article?index=1&guess=HUMAN
-    solution_index = flask.request.args.get("index", default=-1, type=int)
-    current_guess = flask.request.args.get("guess", default="", type=str)
+    # i.e. /check_guess/?index=1&guess=HUMAN
+    # We want to extract the index and guess from this query
+    # see lines 69-73 for examples on how to get the solution index and current guess from the query
 
-    # validate the arguments
-    if (solution_index < 0
-        or solution_index >= len(VALID_SOLUTIONS)
-        or current_guess == ""
-        or not is_valid_guess(current_guess, VALID_GUESSES)):
+    # next, validate the arguments
+    # the solution index you just extracted has to be a valid index in VALID_SOLUTIONS
+    # and your current guess has to follow the rules of Wordle. Luckily, we have previously implemented
+    # is_valid_guess, which is available in utility.py for you to use
+
+    # replace the False with any comparisons you need. Return the same way
+    if (False):
         return flask.jsonify({"feedback": "INVALID"}), 200
     
     # useful to print to check against frontend
     print(VALID_SOLUTIONS[solution_index])
-    return flask.jsonify({"feedback": generate_feedback(current_guess, VALID_SOLUTIONS[solution_index])}), 200
+
+    # since the guess is a valid guess, we need to generate the feedback that corresponds to this guess
+    # again, the previously implemented generate_feedback in utility.py can help
+    return flask.jsonify({"feedback": "REPLACE ME"}), 200
 
 
 # generates the guess using the specified algorithm and data
@@ -138,16 +144,26 @@ def generate_guess():
     # generates the guess using the specified algorithm and data
 
     # this dictionary should contain the keys current_guesses, guess_feedback, mode
+    # the data received here is sent from the frontend
     request_json = flask.request.get_json(force=True)
 
     current_guesses = request_json["current_guesses"]
     guess_feedback = request_json["guess_feedback"]
     mode = request_json["mode"]
 
+    # an example of how to add your own algorithms
     if mode == "only_matched_patterns":
+        # example of how to add an initial guess
         if len(current_guesses) == 0:
             return flask.jsonify({"guess": "CRANE"}), 200
         return flask.jsonify({"guess": only_matched_patterns(current_guesses, guess_feedback, VALID_SOLUTIONS)}), 200
+    
+    # TODO
+    # add your own algorithms here
+    # keep in mind that the only options for mode (i.e. the allowable algorithms) are:
+    # only_matched_patterns, letter_frequency, entropy and tfidf
+    # If you want to add custom algorithms with different naming schemes, talk to your project lead.
+    # It's not hard, just involves changing the frontend slightly.
 
 
 
