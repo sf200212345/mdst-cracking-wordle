@@ -1,0 +1,83 @@
+h1, .mode h3, .change-mode, .main-container, .side-container, #stats-container, #top-words-container {
+    border: 1px solid black;
+}
+
+h1, .mode {
+    padding: 1vh 1vw;
+    text-align: center;
+}
+
+.mode h3, #curr-mode, .change-mode, .mode select, .mode button, .side-container, .main-container {
+    display: inline-block;
+}
+
+.mode h3, .change-mode {
+    width: 40vw;
+    padding: 1vh 1vw;
+    margin: 5px;
+}
+
+.letter {
+    border: 1px solid black;
+    width: 50px;
+    height: 50px;
+    display: inline-block;
+    margin: 5px;
+    text-align: center;
+    line-height: 50px;
+    font-size: 50px;
+    color: white;
+}
+
+.row {
+    margin: 5px;
+}
+
+#game {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+.container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.main-container, .side-container {
+    width: 40vw;
+    height: 70vh;
+    margin: 5px;
+}
+
+.disabled {
+    display: none;
+}
+
+#if-user-mode, #not-user-mode {
+    text-align: center;
+}
+
+#if-user-mode *, #not-user-mode * {
+    text-align: center;
+    margin: 5px;
+}
+
+.correct {
+    background-color: #6ca965;
+}
+
+.misplaced {
+    background-color: #c8b653;
+}
+
+.wrong {
+    background-color: #000000;
+}
+
+#stats-container, #top-words-container {
+    height: 40%;
+    text-align: center;
+}

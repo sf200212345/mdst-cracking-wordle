@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <title>Cracking Wordle</title>
+        <link rel="stylesheet" href="/static/styles.css">
+        <script defer type="text/javascript" src="/static/scripts.js"></script>
+    </head>
+    <body>
+        <h1>Cracking Wordle</h1>
+        <div class="mode">
+            <!--This span is used as an argument when calling the API-->
+            <h3>Current Mode: <span id="curr-mode">user</span></h3>
+            <div class="change-mode">
+                <label for="modes">Change the mode: </label>
+                <select name="modes" id="modes">
+                    <!--Add any custom-named modes here using the same format-->
+                    <option value="user">user</option>
+                    <option value="only_matched_patterns">only_matched_patterns</option>
+                    <option value="letter_frequency">letter_frequency</option>
+                    <option value="entropy">entropy</option>
+                    <option value="tfidf">tfidf</option>
+                </select>
+                <button onclick="change_mode()">Submit</button>
+            </div>
+        </div>
+        <div class="container">
+            <div class="main-container">
+                <!--contains the Wordle clone game with an input box and keyboard with feedback-->
+                <div id="game">
+                    <div id="guesses">
+                        <div class="row" id="row-0">
+                            <!--In the form of row,column-->
+                            <div class="letter" id="00"></div>
+                            <div class="letter" id="01"></div>
+                            <div class="letter" id="02"></div>
+                            <div class="letter" id="03"></div>
+                            <div class="letter" id="04"></div>
+                        </div>
+                        <div class="row" id="row-1">
+                            <!--In the form of row,column-->
+                            <div class="letter" id="10"></div>
+                            <div class="letter" id="11"></div>
+                            <div class="letter" id="12"></div>
+                            <div class="letter" id="13"></div>
+                            <div class="letter" id="14"></div>
+                        </div>
+                        <div class="row" id="row-2">
+                            <!--In the form of row,column-->
+                            <div class="letter" id="20"></div>
+                            <div class="letter" id="21"></div>
+                            <div class="letter" id="22"></div>
+                            <div class="letter" id="23"></div>
+                            <div class="letter" id="24"></div>
+                        </div>
+                        <div class="row" id="row-3">
+                            <!--In the form of row,column-->
+                            <div class="letter" id="30"></div>
+                            <div class="letter" id="31"></div>
+                            <div class="letter" id="32"></div>
+                            <div class="letter" id="33"></div>
+                            <div class="letter" id="34"></div>
+                        </div>
+                        <div class="row" id="row-4">
+                            <!--In the form of row,column-->
+                            <div class="letter" id="40"></div>
+                            <div class="letter" id="41"></div>
+                            <div class="letter" id="42"></div>
+                            <div class="letter" id="43"></div>
+                            <div class="letter" id="44"></div>
+                        </div>
+                        <div class="row" id="row-5">
+                            <!--In the form of row,column-->
+                            <div class="letter" id="50"></div>
+                            <div class="letter" id="51"></div>
+                            <div class="letter" id="52"></div>
+                            <div class="letter" id="53"></div>
+                            <div class="letter" id="54"></div>
+                        </div>
+                    </div>
+
+                    <div id="if-user-mode">
+                        <label for="user-input">Enter Guess (only available in user mode): </label>
+                        <br>
+                        <input type="text" id="user-input" />
+                        <button onclick="submit_user_input()" id="user-input-btn">Submit</button>
+                        <br>
+                        <button onclick="reset_board()">Reset Board</button>
+                    </div>
+                    
+                    <div id="not-user-mode" class="disabled">
+                        <label for="num_simulate">Enter number of times to simulate (only available when not user mode): </label>
+                        <br>
+                        <input type="number" id="num-simulate" />
+                        <button onclick="simulate()">Start Simulating</button>
+                    </div>
+                </div>
+            </div>
+            <div class="side-container">
+                <!--contains the stats of all the different modes-->
+                <div id="stats-container">
+                    <h3>Game Statistics</h3>
+                    Not currently being updated.
+                    <!--Jinja templating-->
+                    {% for mode in modes %}
+                    <div class="stats-line" id="{{mode.name}}">
+                        {{mode.name}} --- Win Rate: {{mode.win_rate}} --- Avg Guesses: {{mode.avg_guesses}}
+                    </div>
+                    {% endfor %}
+                </div>
+                <!--contains the top n words with their scores, for modes other than user-->
+                <div id="top-words-container">
+                    <h3>Top Words for Current Guess</h3>
+                    <div id="top-words">
+                        Not Available
+                    </div>
+                </div>
+            </div>
+        </div>
+    </body>
+</html>

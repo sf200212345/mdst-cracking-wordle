@@ -1,3 +1,5 @@
+# this version is old. See Wordle solution or wordle_master for the most up-to-date version.
+
 import pathlib
 import random
 import string
