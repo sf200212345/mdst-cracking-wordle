@@ -66,7 +66,6 @@ function submit_user_input() {
             return response.json();
         })
         .then((data) => {
-            console.log(data.feedback);
             if (data.feedback === "INVALID") {
                 user_input.value = data.feedback;
             }
@@ -83,22 +82,72 @@ function submit_user_input() {
         .catch((error) => console.log(error));
 }
 
-function simulate() {
+async function simulate() {
     // simulate using the current mode num_simulate times
     // can only call this function when the mode is not user
-    let num_simulate = document.getElementById("num-simulate").value;
+    let num_simulate = Number(document.getElementById("num-simulate").value);
     let mode = document.getElementById("curr-mode").textContent;
     for (let i = 0; i < num_simulate; ++i) {
         // start a new game
         reset_board();
 
         // use while loop, since initial guesses can increase the guess amount
+        while (current_guesses.length < NUM_GUESSES) {
+            // generate a next guess
+            const { guess } = await fetch("/generate_guess/", {credentials: "same-origin",
+                                                         method: "POST",
+                                                         body: JSON.stringify({mode, current_guesses, guess_feedback})})
+                                        .then((response) => {
+                                            if (!response.ok) throw Error(response.statusText);
+                                            return response.json();
+                                        })
+                                        .catch((error) => console.log(error));
+            // get feedback for the next guess
+            const { feedback } = await fetch("/check_guess/?index=" + current_solution_index.toString() + "&guess=" + guess,
+                                             { credentials: "same-origin", method: "POST" })
+                                            .then((response) => {
+                                                if (!response.ok) throw Error(response.statusText);
+                                                return response.json();
+                                            })
+                                            .catch((error) => console.log(error));
+
+            current_guesses.push(guess);
+            guess_feedback.push(feedback);
+            insert_letters();
+            
+            // currently delaying 2 seconds per iteration
+            //await new Promise(r => setTimeout(r, 2000));
+            
+            if (guess_feedback[guess_feedback.length - 1] === "CCCCC") {
+                break;
+            }
+        }
     }
 }
 
 function reset_board() {
+    let mode = document.getElementById("curr-mode").textContent;
     if (current_guesses.length >= NUM_GUESSES || guess_feedback[guess_feedback.length - 1] === "CCCCC") {
         // store the data in db and update stats
+        let win = Number(guess_feedback[guess_feedback.length - 1] === "CCCCC");
+        fetch("/insert_stat/?win=" + win.toString() + "&num_guesses=" + current_guesses.length.toString() + "&mode=" + mode,
+              { credentials: "same-origin", method: "POST" })
+            .then((response) => {
+                if (!response.ok) throw Error(response.statusText);
+                return response.json();
+            })
+            .then(({ modes }) => {
+                let stats_list = document.getElementById("stats-list");
+                // overwrite stats list with new data
+                stats_list.innerHTML = modes.map(({mode, win_rate, avg_guesses}) => {
+                    return '<div class="stats-line" key="' + mode + '">'
+                            + '<span class="mode-stat">' + mode + '</span>'
+                            + '<span class="win-rate">Win Rate: ' + win_rate.toFixed(2) + '</span>'
+                            + '<span class="avg-guesses">Avg Guesses: ' + avg_guesses.toFixed(2) + '</span>'
+                            + '</div>'
+                }).join("");
+            })
+            .catch((error) => console.log(error));
     }
     current_guesses = [];
     guess_feedback = [];
@@ -111,7 +160,6 @@ function reset_board() {
         })
         .then((data) => {
             current_solution_index = data.index;
-            console.log(current_solution_index);
         })
         .catch((error) => console.log(error));
     // clear the top words section
@@ -120,7 +168,7 @@ function reset_board() {
     // clear all user input
     document.getElementById("user-input").value = "";
 
-    document.getElementById("modes").value = document.getElementById("curr-mode").textContent;
+    document.getElementById("modes").value = mode;
 
     // clear colors of all letters in the game board and remove letters
     for (let row = 0; row < NUM_GUESSES; ++row) {

@@ -81,3 +81,18 @@ h1, .mode {
     height: 40%;
     text-align: center;
 }
+
+.mode-stat {
+    font-weight: bold;
+}
+
+.stats-line {
+    padding: 5px;
+    border: 1px solid black;
+    margin: 5px;
+    text-align: center;
+}
+
+.stats-line span {
+    margin: 5px;
+}

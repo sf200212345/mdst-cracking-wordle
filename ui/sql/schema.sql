@@ -13,7 +13,8 @@ num_guesses is the number of guesses used for this game. If the game was not won
 created, DATETIME type, automatically set by SQL engine to current date/time.
 */
 CREATE TABLE stats(
-    mode VARCHAR(40) PRIMARY KEY,
+    ROWID INTEGER PRIMARY KEY,
+    mode VARCHAR(40) NOT NULL,
     win INTEGER NOT NULL,
     num_guesses INTEGER NOT NULL,
     completed DATETIME DEFAULT CURRENT_TIMESTAMP

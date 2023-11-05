@@ -99,13 +99,16 @@
                 <!--contains the stats of all the different modes-->
                 <div id="stats-container">
                     <h3>Game Statistics</h3>
-                    Not currently being updated.
-                    <!--Jinja templating-->
-                    {% for mode in modes %}
-                    <div class="stats-line" id="{{mode.name}}">
-                        {{mode.name}} --- Win Rate: {{mode.win_rate}} --- Avg Guesses: {{mode.avg_guesses}}
+                    <div id="stats-list">
+                        <!--Jinja templating-->
+                        {% for mode in modes %}
+                        <div class="stats-line" key="{{mode.mode}}">
+                            <span class="mode-stat">{{mode.mode}}</span>
+                            <span class="win-rate">Win Rate: {{mode.win_rate}}</span>
+                            <span class="avg-guesses">Avg Guesses: {{mode.avg_guesses}}</span>
+                        </div>
+                        {% endfor %}
                     </div>
-                    {% endfor %}
                 </div>
                 <!--contains the top n words with their scores, for modes other than user-->
                 <div id="top-words-container">
